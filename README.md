@@ -1,6 +1,12 @@
 # SmartPark - Vehicle Management System
 
-SmartPark is a modern, full-stack vehicle management and parking reservation system. It provides a cohesive dual-portal interface: a **User Portal** for drivers to book and manage parking sessions, and a powerful **Admin Dashboard** for comprehensive system management.
+SmartPark is a modern, full-stack vehicle management and parking reservation system designed to digitize and automate parking facilities. Whether it's managing a single garage or a multi-location city parking network, SmartPark simplifies the entire lifecycle of a parking session—from advanced reservations to live check-ins and automated fee calculations.
+
+It provides a cohesive dual-portal interface:
+- A **User Portal** for drivers to easily find available slots tailored to their vehicle type (Two-Wheeler, Four-Wheeler, or Heavy Vehicle), reserve spaces in advance, and manage their active parking sessions.
+- A powerful **Admin Dashboard** allowing facility managers to track real-time occupancy, monitor revenue streams, and dynamically manage physical infrastructure like lots and individual parking slots.
+
+Built with a sleek, minimalist "beige and black" design aesthetic, it prioritizes an exceptional user experience while maintaining a robust relational database architecture under the hood.
 
 ## 🚀 Features
 
