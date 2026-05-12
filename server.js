@@ -17,7 +17,8 @@ const RATE = { 'Two-Wheeler': 20, 'Four-Wheeler': 50, 'Heavy Vehicle': 100 };
 
 function calcFee(slotType, startTime, endTime) {
   const hrs = (new Date(endTime) - new Date(startTime)) / 3600000;
-  return parseFloat(((RATE[slotType] || 50) * Math.max(hrs, 0)).toFixed(2));
+  const billedHrs = Math.max(Math.ceil(hrs), 1);
+  return parseFloat(((RATE[slotType] || 50) * billedHrs).toFixed(2));
 }
 
 // ============================================================

@@ -45,7 +45,7 @@ export function AdminDashboard({ showToast }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-sm p-4 flex flex-col">
           <span className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-2">Total Revenue</span>
-          <span className="text-2xl font-medium number-stat mt-auto">₹{stats.revenue}</span>
+          <span className="text-2xl font-medium number-stat mt-auto">₹{parseFloat(stats.revenue || 0).toFixed(2)}</span>
         </div>
         <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-sm p-4 flex flex-col">
           <span className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-2">Total Slots</span>
