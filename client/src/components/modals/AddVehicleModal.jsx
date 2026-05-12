@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { X } from 'lucide-react'
 import { api } from '../../lib/api'
 import { ModalOverlay } from './BookSlotModal'
+import { CustomSelect } from '../ui/CustomSelect'
 
 export function AddVehicleModal({ user, onClose, onAdded, showToast }) {
   const [form, setForm] = useState({ lp: '', vtype: 'Two-Wheeler', model: '' })
@@ -29,11 +30,11 @@ export function AddVehicleModal({ user, onClose, onAdded, showToast }) {
 
   return (
     <ModalOverlay onClose={onClose}>
-      <div className="modal-in bg-[#111113] border border-[#2A2A2D] rounded-xl w-full max-w-sm">
+      <div className="modal-in bg-[var(--card-bg)] border border-[var(--card-border)] rounded-sm w-full max-w-sm shadow-md">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#1E1E21]">
-          <h3 className="text-[15px] font-medium">Add Vehicle</h3>
-          <button onClick={onClose} className="text-[#52525B] hover:text-white transition-colors cursor-pointer">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--card-border)]">
+          <h3 className="text-[18px] font-medium serif-font">Add Vehicle</h3>
+          <button onClick={onClose} className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -50,11 +51,15 @@ export function AddVehicleModal({ user, onClose, onAdded, showToast }) {
           </FormField>
 
           <FormField label="Vehicle Type">
-            <select value={form.vtype} onChange={update('vtype')} className="input-base">
-              <option>Two-Wheeler</option>
-              <option>Four-Wheeler</option>
-              <option>Heavy Vehicle</option>
-            </select>
+            <CustomSelect
+              value={form.vtype}
+              onChange={val => setForm(f => ({ ...f, vtype: val }))}
+              options={[
+                { label: 'Two-Wheeler', value: 'Two-Wheeler' },
+                { label: 'Four-Wheeler', value: 'Four-Wheeler' },
+                { label: 'Heavy Vehicle', value: 'Heavy Vehicle' }
+              ]}
+            />
           </FormField>
 
           <FormField label="Model">
@@ -69,8 +74,8 @@ export function AddVehicleModal({ user, onClose, onAdded, showToast }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50
-                       text-white text-[13px] font-medium rounded-md transition-colors cursor-pointer"
+            className="w-full py-2.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-50
+                       text-[var(--accent-fg)] text-[13px] font-medium rounded-sm transition-colors cursor-pointer"
           >
             {loading ? 'Adding...' : 'Add Vehicle'}
           </button>
@@ -83,7 +88,7 @@ export function AddVehicleModal({ user, onClose, onAdded, showToast }) {
 function FormField({ label, children }) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-wider text-[#52525B] mb-1.5">{label}</label>
+      <label className="block text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-medium">{label}</label>
       {children}
     </div>
   )

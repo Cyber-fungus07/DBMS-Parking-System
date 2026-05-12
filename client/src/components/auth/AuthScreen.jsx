@@ -1,41 +1,70 @@
 import { useState } from 'react'
-import { Car } from 'lucide-react'
+import { Car, ShieldCheck, Sun, Moon } from 'lucide-react'
 import { api } from '../../lib/api'
 
-export function AuthScreen({ onLoginSuccess }) {
+export function AuthScreen({ onLoginSuccess, theme, toggleTheme }) {
+  const [portal, setPortal] = useState('driver') // 'driver' | 'admin'
   const [tab, setTab] = useState('login')
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[#0A0A0B] z-50 px-4">
-      <div className="w-full max-w-sm bg-[#111113] border border-[#1E1E21] rounded-xl p-8 text-center">
+    <div className="fixed inset-0 flex items-center justify-center bg-[var(--bg-color)] z-50 px-4">
+      <div className="w-full max-w-sm bg-[var(--card-bg)] border border-[var(--card-border)] rounded-sm p-8 text-center relative">
+        <button
+          onClick={toggleTheme}
+          className="absolute top-4 right-4 flex items-center justify-center w-8 h-8 text-[var(--text-muted)] border border-[var(--card-border)]
+                     rounded-sm hover:text-[var(--text-main)] hover:border-[var(--accent)] transition-all duration-150 cursor-pointer"
+        >
+          {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
         {/* Logo */}
-        <div className="w-8 h-8 mx-auto mb-4 bg-indigo-500 rounded-md flex items-center justify-center">
-          <Car className="w-4 h-4 text-white" />
+        <div className="w-8 h-8 mx-auto mb-4 bg-[var(--accent)] rounded-sm flex items-center justify-center">
+          {portal === 'driver' ? <Car className="w-4 h-4 text-[var(--accent-fg)]" /> : <ShieldCheck className="w-4 h-4 text-[var(--accent-fg)]" />}
         </div>
-        <h2 className="text-[18px] font-medium text-white mb-1">SmartPark</h2>
-        <p className="text-[13px] text-[#52525B] mb-6">Driver Portal</p>
+        <h2 className="text-[20px] font-medium text-[var(--text-main)] mb-1 serif-font">SmartPark</h2>
+        <p className="text-[13px] text-[var(--text-muted)] mb-6">{portal === 'driver' ? 'Driver Portal' : 'Admin Portal'}</p>
 
-        {/* Tabs */}
-        <div className="flex gap-2 p-1 bg-[#1C1C1F] rounded-lg mb-6">
-          {['login', 'register'].map(t => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`flex-1 py-1.5 text-[13px] rounded-md transition-all duration-150 cursor-pointer
-                ${tab === t
-                  ? 'bg-[#18181B] text-white shadow'
-                  : 'text-[#A1A1AA] hover:text-white'}`}
-            >
-              {t === 'login' ? 'Login' : 'Register'}
-            </button>
-          ))}
+        {/* Portal Toggle */}
+        <div className="flex gap-2 p-1 bg-[var(--card-muted)] border border-[var(--card-border)] rounded-sm mb-6">
+          <button
+            onClick={() => setPortal('driver')}
+            className={`flex-1 py-1.5 text-[13px] rounded-sm transition-all duration-150 cursor-pointer
+              ${portal === 'driver' ? 'bg-[var(--accent)] text-[var(--accent-fg)] shadow' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+          >
+            Driver Portal
+          </button>
+          <button
+            onClick={() => setPortal('admin')}
+            className={`flex-1 py-1.5 text-[13px] rounded-sm transition-all duration-150 cursor-pointer
+              ${portal === 'admin' ? 'bg-[var(--accent)] text-[var(--accent-fg)] shadow' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+          >
+            Admin Portal
+          </button>
         </div>
 
-        {tab === 'login'
-          ? <LoginForm onLoginSuccess={onLoginSuccess} />
-          : <RegisterForm onLoginSuccess={onLoginSuccess} />}
+        {portal === 'driver' && (
+          <>
+            {/* Tabs for Driver */}
+            <div className="flex gap-4 justify-center mb-6 border-b border-[#E5E5E5]">
+              <button
+                onClick={() => setTab('login')}
+                className={`pb-2 text-[13px] font-medium transition-colors ${tab === 'login' ? 'text-[var(--text-main)] border-b-2 border-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+              >
+                Login
+              </button>
+              <button
+                onClick={() => setTab('register')}
+                className={`pb-2 text-[13px] font-medium transition-colors ${tab === 'register' ? 'text-[var(--text-main)] border-b-2 border-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+              >
+                Register
+              </button>
+            </div>
+            {tab === 'login' ? <LoginForm onLoginSuccess={onLoginSuccess} /> : <RegisterForm onLoginSuccess={onLoginSuccess} />}
+          </>
+        )}
 
-        <a href="/" className="inline-block mt-6 text-[12px] text-[#52525B] hover:text-white transition-colors">
+        {portal === 'admin' && <AdminLoginForm onLoginSuccess={onLoginSuccess} />}
+
+        <a href="/" className="inline-block mt-6 text-[12px] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors">
           ← Back to Home
         </a>
       </div>
@@ -116,8 +145,42 @@ function RegisterForm({ onLoginSuccess }) {
 function FormField({ label, children }) {
   return (
     <div className="mb-4">
-      <label className="block text-[11px] uppercase tracking-wider text-[#52525B] mb-1.5">{label}</label>
+      <label className="block text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-bold">{label}</label>
       {children}
     </div>
+  )
+}
+
+function AdminLoginForm({ onLoginSuccess }) {
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+
+  function handleLogin(e) {
+    e.preventDefault()
+    if (!password.trim()) { 
+      setError('Please enter admin password')
+      return 
+    }
+    if (password === 'admin') {
+      onLoginSuccess({ D_name: 'Admin', role: 'admin' })
+    } else {
+      setError('Invalid admin password (try "admin")')
+    }
+  }
+
+  return (
+    <form onSubmit={handleLogin} className="text-left">
+      <FormField label="Admin Password">
+        <input
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          placeholder="Enter password (admin)"
+          className="input-base"
+        />
+      </FormField>
+      <button type="submit" className="btn-primary-full">Access Dashboard →</button>
+      {error && <p className="mt-3 text-[12px] text-red-300">{error}</p>}
+    </form>
   )
 }

@@ -29,8 +29,8 @@ export function History({ user }) {
   return (
     <div className="page-in max-w-5xl mx-auto px-6 py-8">
       <div className="mb-6">
-        <h2 className="text-[18px] font-medium mb-1">Entry / Exit History</h2>
-        <p className="text-[13px] text-[#52525B]">Your complete parking activity log</p>
+        <h2 className="text-[24px] font-medium mb-1 serif-font">Entry / Exit History</h2>
+        <p className="text-[13px] text-[var(--text-muted)]">Your complete parking activity log</p>
       </div>
 
       {loading && <LoadingState />}
@@ -49,18 +49,18 @@ export function History({ user }) {
               : ((new Date(l.Exit_time) - new Date(l.Entry_time)) / 3600000).toFixed(1) + ' hrs'
 
             return (
-              <div key={i} className="bg-[#111113] border border-[#1E1E21] rounded-xl p-4 flex flex-col">
+              <div key={i} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-sm p-4 flex flex-col shadow-sm">
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <div className="flex items-center gap-1.5 text-[14px] font-medium">
-                      <Icon className="w-4 h-4 text-[#A1A1AA]" />
+                    <div className="flex items-center gap-1.5 text-[16px] font-medium serif-font">
+                      <Icon className="w-4 h-4 text-[var(--text-main)]" />
                       {l.License_Plate}
                     </div>
-                    <div className="text-[11px] text-[#52525B] mt-0.5">{l.Model}</div>
+                    <div className="text-[11px] text-[var(--text-muted)] mt-0.5">{l.Model}</div>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 text-[13px] text-[#D4D4D8] mb-4">
+                <div className="flex flex-col gap-2 text-[13px] text-[var(--text-main)] mb-4">
                   <Row label="Location" value={`${l.Lot_name} (#${l.Slot_id})`} />
                   <Row label="Entry"    value={fmt(l.Entry_time)} />
                   <Row label="Exit"     value={l.Exit_time ? fmt(l.Exit_time) : '—'} />
@@ -68,7 +68,7 @@ export function History({ user }) {
                   <Row label="Fee"      value={l.Exit_time ? `₹${l.Fee}` : '—'} mono />
                 </div>
 
-                <div className="mt-auto pt-3 border-t border-[#1E1E21]">
+                <div className="mt-auto pt-3 border-t border-[var(--card-border)]">
                   <Badge status={parked ? 'Active' : (l.Payment_status || 'Paid')} />
                 </div>
               </div>
@@ -83,7 +83,7 @@ export function History({ user }) {
 function Row({ label, value, mono }) {
   return (
     <div className="flex justify-between">
-      <span className="text-[#52525B]">{label}</span>
+      <span className="text-[var(--text-muted)] font-medium">{label}</span>
       <span className={mono ? 'font-mono tabular-nums' : ''}>{value}</span>
     </div>
   )

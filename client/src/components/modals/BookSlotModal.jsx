@@ -39,11 +39,11 @@ export function BookSlotModal({ slot, user, onClose, onBooked, showToast }) {
 
   return (
     <ModalOverlay onClose={onClose}>
-      <div className="modal-in bg-[#111113] border border-[#2A2A2D] rounded-xl w-full max-w-md">
+      <div className="modal-in bg-[var(--card-bg)] border border-[var(--card-border)] rounded-sm w-full max-w-md shadow-md">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#1E1E21]">
-          <h3 className="text-[15px] font-medium">Book Slot #{slot.Slot_id}</h3>
-          <button onClick={onClose} className="text-[#52525B] hover:text-white transition-colors cursor-pointer">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--card-border)]">
+          <h3 className="text-[18px] font-medium serif-font">Book Slot #{slot.Slot_id}</h3>
+          <button onClick={onClose} className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -51,11 +51,11 @@ export function BookSlotModal({ slot, user, onClose, onBooked, showToast }) {
         {/* Body */}
         <div className="p-5 space-y-4">
           {/* Slot info */}
-          <div className="flex items-center gap-3 bg-[#1C1C1F] border border-[#2A2A2D] rounded-lg p-4">
-            <Icon className="w-8 h-8 text-indigo-400 flex-shrink-0" />
+          <div className="flex items-center gap-3 bg-[var(--card-muted)] border border-[var(--card-border)] rounded-sm p-4">
+            <Icon className="w-8 h-8 text-[var(--text-main)] flex-shrink-0" />
             <div>
-              <div className="text-[15px] font-medium">Slot #{slot.Slot_id} — {slot.S_type}</div>
-              <div className="text-[12px] text-[#A1A1AA] mt-0.5">Rate: ₹{rate}/hour</div>
+              <div className="text-[16px] font-medium serif-font">Slot #{slot.Slot_id} — {slot.S_type}</div>
+              <div className="text-[12px] text-[var(--text-muted)] mt-0.5">Rate: ₹{rate}/hour</div>
             </div>
           </div>
 
@@ -80,16 +80,16 @@ export function BookSlotModal({ slot, user, onClose, onBooked, showToast }) {
           </div>
 
           {/* Fee estimate */}
-          <div className="text-[13px] p-3 bg-[#18181B] rounded-md">
+          <div className="text-[13px] p-3 bg-[var(--card-muted)] border border-[var(--card-border)] rounded-sm">
             {!fee || hours <= 0 ? (
-              <span className="text-red-300">End time must be after start time</span>
+              <span className="text-red-600">End time must be after start time</span>
             ) : (
               <>
                 <div className="flex justify-between">
-                  <span className="text-[#A1A1AA]">Estimated Fee:</span>
-                  <strong className="text-white tabular-nums">₹{fee}</strong>
+                  <span className="text-[var(--text-muted)]">Estimated Fee:</span>
+                  <strong className="text-[var(--text-main)] tabular-nums font-medium">₹{fee}</strong>
                 </div>
-                <div className="text-[11px] text-[#52525B] mt-1">
+                <div className="text-[11px] text-[var(--text-muted)] mt-1">
                   {hours.toFixed(1)} hrs × ₹{rate}/hr
                 </div>
               </>
@@ -99,8 +99,8 @@ export function BookSlotModal({ slot, user, onClose, onBooked, showToast }) {
           <button
             onClick={handleConfirm}
             disabled={loading || !fee}
-            className="w-full py-2.5 bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50
-                       text-white text-[13px] font-medium rounded-md transition-colors cursor-pointer"
+            className="w-full py-2.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-50
+                       text-[var(--accent-fg)] text-[13px] font-medium rounded-sm transition-colors cursor-pointer"
           >
             {loading ? 'Confirming...' : 'Confirm Booking'}
           </button>
@@ -124,7 +124,7 @@ export function ModalOverlay({ children, onClose }) {
 function FormField({ label, children, className = '' }) {
   return (
     <div className={className}>
-      <label className="block text-[11px] uppercase tracking-wider text-[#52525B] mb-1.5">{label}</label>
+      <label className="block text-[11px] uppercase tracking-wider text-[var(--text-muted)] font-medium mb-1.5">{label}</label>
       {children}
     </div>
   )

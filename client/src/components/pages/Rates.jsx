@@ -10,28 +10,28 @@ export function Rates() {
   return (
     <div className="page-in max-w-5xl mx-auto px-6 py-8">
       <div className="mb-6">
-        <h2 className="text-[18px] font-medium mb-1">Parking Rates</h2>
-        <p className="text-[13px] text-[#52525B]">Fee structure by vehicle type</p>
+        <h2 className="text-[24px] font-medium mb-1 serif-font">Parking Rates</h2>
+        <p className="text-[13px] text-[var(--text-muted)]">Fee structure by vehicle type</p>
       </div>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 mb-6">
         {RATE_DATA.map(({ type, price, icon: Icon, color, examples }) => (
-          <div key={type} className="bg-[#111113] border border-[#1E1E21] rounded-xl p-6">
-            <div className="w-8 h-8 flex items-center justify-center bg-[#1C1C1F] border border-[#2A2A2D]
-                            rounded-md mb-4 text-[#A1A1AA]">
+          <div key={type} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-sm p-6 shadow-sm">
+            <div className="w-8 h-8 flex items-center justify-center bg-[var(--card-muted)] border border-[var(--card-border)]
+                            rounded-sm mb-4 text-[var(--text-main)]">
               <Icon className="w-4 h-4" />
             </div>
-            <div className="text-[13px] font-medium text-white mb-1">{type}</div>
-            <div className="text-[24px] font-medium mb-4" style={{ color }}>
-              ₹{price}<span className="text-[13px] text-[#52525B] font-normal">/hr</span>
+            <div className="text-[15px] font-medium text-[var(--text-main)] mb-1 serif-font">{type}</div>
+            <div className="text-[28px] font-medium mb-4 serif-font" style={{ color }}>
+              ₹{price}<span className="text-[13px] text-[var(--text-muted)] font-normal font-sans">/hr</span>
             </div>
-            <div className="text-[12px] text-[#A1A1AA]">{examples}</div>
+            <div className="text-[12px] text-[var(--text-muted)]">{examples}</div>
           </div>
         ))}
       </div>
 
-      <div className="text-[12px] text-[#52525B] p-4 bg-[#1C1C1F] border border-[#1E1E21] rounded-lg">
-        <strong className="text-[#A1A1AA]">Note:</strong> Fees are calculated from entry time to exit
+      <div className="text-[12px] text-[var(--text-muted)] p-4 bg-[var(--card-muted)] border border-[var(--card-border)] rounded-sm">
+        <strong className="text-[var(--text-main)]">Note:</strong> Fees are calculated from entry time to exit
         time. Reservations are charged based on booked duration. Minimum charge applies for first 30 minutes.
       </div>
     </div>

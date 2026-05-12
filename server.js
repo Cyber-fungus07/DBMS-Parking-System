@@ -571,18 +571,7 @@ app.put('/api/user/reservations/:id/cancel', async (req, res) => {
 // ============================================================
 // SERVE FRONTEND
 // ============================================================
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
-app.get('/user', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'user.html'));
-});
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// The frontend is now fully React-based and served via Vite/React Router.
 
 // ============================================================
 // START SERVER

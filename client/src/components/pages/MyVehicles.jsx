@@ -30,13 +30,13 @@ export function MyVehicles({ user, showToast }) {
     <div className="page-in max-w-5xl mx-auto px-6 py-8">
       <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h2 className="text-[18px] font-medium mb-1">My Vehicles</h2>
-          <p className="text-[13px] text-[#52525B]">Manage your registered vehicles</p>
+          <h2 className="text-[24px] font-medium mb-1 serif-font">My Vehicles</h2>
+          <p className="text-[13px] text-[var(--text-muted)]">Manage your registered vehicles</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600
-                     text-white text-[12px] font-medium rounded-md transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)]
+                     text-[var(--accent-fg)] text-[12px] font-medium rounded-sm transition-colors cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" /> Add Vehicle
         </button>
@@ -53,14 +53,14 @@ export function MyVehicles({ user, showToast }) {
           {vehicles.map(v => {
             const Icon = TYPE_ICONS[v.V_type] || Car
             return (
-              <div key={v.Vehicle_id} className="bg-[#111113] border border-[#1E1E21] rounded-xl p-4 flex items-center gap-4">
-                <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-[#1C1C1F]
-                                border border-[#2A2A2D] rounded-lg text-[#A1A1AA]">
+              <div key={v.Vehicle_id} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-sm p-4 flex items-center gap-4 shadow-sm">
+                <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-[var(--card-muted)]
+                                border border-[var(--card-border)] rounded-sm text-[var(--text-main)]">
                   <Icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-[14px] font-medium">{v.License_Plate}</div>
-                  <div className="text-[11px] text-[#52525B] mt-0.5">{v.V_type} · {v.Model}</div>
+                  <div className="text-[16px] font-medium serif-font">{v.License_Plate}</div>
+                  <div className="text-[11px] text-[var(--text-muted)] mt-0.5">{v.V_type} · {v.Model}</div>
                 </div>
               </div>
             )
