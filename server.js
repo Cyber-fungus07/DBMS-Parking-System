@@ -33,7 +33,9 @@ app.get('/api/dashboard/stats', async (req, res) => {
     const [[reserved]]    = await pool.query("SELECT COUNT(*) AS c FROM ParkingSlot WHERE Statement='Reserved'");
     const [[activeRes]]   = await pool.query("SELECT COUNT(*) AS c FROM Reservation WHERE R_status IN ('Pending','Confirmed')");
     const [[logs]]        = await pool.query('SELECT COUNT(*) AS c FROM EntryExitLog');
-    const [[revenue]]     = await pool.query("SELECT COALESCE(SUM(Fee),0) AS total FROM Reservation WHERE Payment_status='Paid'");
+    const [[revenueRes]]  = await pool.query("SELECT COALESCE(SUM(Fee),0) AS total FROM Reservation WHERE Payment_status='Paid'");
+    const [[revenueLog]]  = await pool.query("SELECT COALESCE(SUM(Fee),0) AS total FROM EntryExitLog WHERE Payment_status='Paid'");
+    const revenue = { total: parseFloat(revenueRes.total) + parseFloat(revenueLog.total) };
 
     const [slotTypes]     = await pool.query(
       "SELECT S_type, COUNT(*) AS total, SUM(Statement='Available') AS available FROM ParkingSlot GROUP BY S_type"

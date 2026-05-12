@@ -21,8 +21,8 @@ export function CustomSelect({ value, onChange, options, className = '' }) {
         className="input-base flex items-center justify-between cursor-pointer"
         onClick={() => setOpen(!open)}
       >
-        <span className={!value && options[0].value === '' ? 'text-[var(--text-muted)]' : ''}>
-          {selectedOption ? selectedOption.label : ''}
+        <span className={!value && options[0]?.value === '' ? 'text-[var(--text-muted)]' : ''}>
+          {selectedOption ? selectedOption.label : (options.length === 0 ? 'No options' : '')}
         </span>
         <ChevronDown className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </div>

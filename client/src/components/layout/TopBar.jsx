@@ -14,6 +14,7 @@ const ADMIN_NAV_ITEMS = [
   { id: 'logs',         label: 'Logs',         icon: Activity },
   { id: 'drivers',      label: 'Drivers',      icon: Users },
   { id: 'vehicles',     label: 'Vehicles',     icon: CarFront },
+  { id: 'slots',        label: 'Slots',        icon: Car },
 ]
 
 export function TopBar({ user, activePage, onNavigate, onLogout, theme, toggleTheme }) {

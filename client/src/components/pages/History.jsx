@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Clock, Bike, CarFront, Truck } from 'lucide-react'
+import { Clock, Bike, CarFront, Truck, LogIn, LogOut } from 'lucide-react'
 import { api, fmt } from '../../lib/api'
 import { EmptyState, LoadingState } from '../ui/States'
 import { Badge } from '../ui/Badge'
+import { ParkVehicleModal } from '../modals/ParkVehicleModal'
 
 const TYPE_ICONS = { 'Two-Wheeler': Bike, 'Four-Wheeler': CarFront, 'Heavy Vehicle': Truck }
 
-export function History({ user }) {
+export function History({ user, showToast }) {
   const [logs, setLogs]       = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError]     = useState('')
@@ -26,11 +27,45 @@ export function History({ user }) {
     load()
   }, [user.Did])
 
+  const load = async () => {
+    setLoading(true); setError('')
+    try {
+      const rows = await api(`/api/user/${user.Did}/logs`)
+      setLogs(rows)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleCheckout(logId) {
+    if (!window.confirm('Are you sure you want to checkout?')) return
+    try {
+      const res = await api(`/api/logs/${logId}/exit`, 'PUT', { Payment_status: 'Paid' })
+      showToast(`Checked out successfully! Fee: ₹${res.fee}`, 'success')
+      load()
+    } catch (e) {
+      showToast(e.message, 'error')
+    }
+  }
+
+  const [isParkModalOpen, setIsParkModalOpen] = useState(false)
+
   return (
     <div className="page-in max-w-5xl mx-auto px-6 py-8">
-      <div className="mb-6">
-        <h2 className="text-[24px] font-medium mb-1 serif-font">Entry / Exit History</h2>
-        <p className="text-[13px] text-[var(--text-muted)]">Your complete parking activity log</p>
+      <div className="mb-6 flex justify-between items-end">
+        <div>
+          <h2 className="text-[24px] font-medium mb-1 serif-font">Entry / Exit History</h2>
+          <p className="text-[13px] text-[var(--text-muted)]">Your complete parking activity log</p>
+        </div>
+        <button
+          onClick={() => setIsParkModalOpen(true)}
+          className="flex items-center gap-2 h-9 px-4 bg-[var(--text-main)] text-[var(--bg-color)] font-medium text-[13px] rounded-sm hover:opacity-90 transition-opacity"
+        >
+          <LogIn className="w-4 h-4" />
+          Check In (Park)
+        </button>
       </div>
 
       {loading && <LoadingState />}
@@ -68,14 +103,31 @@ export function History({ user }) {
                   <Row label="Fee"      value={l.Exit_time ? `₹${l.Fee}` : '—'} mono />
                 </div>
 
-                <div className="mt-auto pt-3 border-t border-[var(--card-border)]">
+                <div className="mt-auto pt-3 border-t border-[var(--card-border)] flex items-center justify-between">
                   <Badge status={parked ? 'Active' : (l.Payment_status || 'Paid')} />
+                  {parked && (
+                    <button
+                      onClick={() => handleCheckout(l.Log_id)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-[var(--bg-color)] bg-[var(--text-main)] rounded-sm hover:opacity-90 transition-opacity"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      Checkout
+                    </button>
+                  )}
                 </div>
               </div>
             )
           })}
         </div>
       )}
+
+      <ParkVehicleModal
+        isOpen={isParkModalOpen}
+        onClose={() => setIsParkModalOpen(false)}
+        user={user}
+        showToast={showToast}
+        onSuccess={load}
+      />
     </div>
   )
 }
