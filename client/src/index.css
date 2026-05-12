@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --accent: #6366F1;
+}
+
+* {
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #0A0A0B;
+  color: #FAFAFA;
+}
+
+/* Shared utility classes */
+.input-base {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: #0A0A0B;
+  border: 1px solid #2A2A2D;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #FAFAFA;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  outline: none;
+}
+.input-base:focus {
+  border-color: #6366F1;
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+}
+.input-base option {
+  background-color: #111113;
+}
+
+.btn-primary-full {
+  width: 100%;
+  padding: 10px;
+  background-color: #6366F1;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+  font-family: 'Inter', sans-serif;
+}
+.btn-primary-full:hover { background-color: #4F46E5; }
+
+/* Page entry animation */
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+.page-in { animation: pageIn 200ms ease; }
+
+/* Modal entry animation */
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.modal-in { animation: modalIn 150ms ease-out; }
