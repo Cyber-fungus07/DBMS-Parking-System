@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartPark — Parking Management System</title>
+  <meta name="description" content="A smart parking management system for efficient slot booking, vehicle tracking, and entry-exit logging."/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🅿</div>
+      <span class="logo-text">SmartPark</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">
+        <span class="nav-icon">📊</span><span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-page="drivers" onclick="showPage('drivers',this)">
+        <span class="nav-icon">👤</span><span>Drivers</span>
+      </a>
+      <a href="#" class="nav-item" data-page="vehicles" onclick="showPage('vehicles',this)">
+        <span class="nav-icon">🚗</span><span>Vehicles</span>
+      </a>
+      <a href="#" class="nav-item" data-page="lots" onclick="showPage('lots',this)">
+        <span class="nav-icon">🏢</span><span>Parking Lots</span>
+      </a>
+      <a href="#" class="nav-item" data-page="slots" onclick="showPage('slots',this)">
+        <span class="nav-icon">🔲</span><span>Parking Slots</span>
+      </a>
+      <a href="#" class="nav-item" data-page="reservations" onclick="showPage('reservations',this)">
+        <span class="nav-icon">📅</span><span>Reservations</span>
+      </a>
+      <a href="#" class="nav-item" data-page="logs" onclick="showPage('logs',this)">
+        <span class="nav-icon">📋</span><span>Entry-Exit Log</span>
+      </a>
+      <a href="#" class="nav-item" data-page="schema" onclick="showPage('schema',this)">
+        <span class="nav-icon">🗄️</span><span>DB Schema</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">DBMS Mini Project</div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="time-badge" id="timeBadge"></div>
+        <div class="user-badge">Admin</div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card" style="--c:#6c63ff">
+          <div class="stat-icon">👤</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-drivers">0</div>
+            <div class="stat-label">Registered Drivers</div>
+          </div>
+        </div>
+        <div class="stat-card" style="--c:#00d4aa">
+          <div class="stat-icon">🚗</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-vehicles">0</div>
+            <div class="stat-label">Vehicles Registered</div>
+          </div>
+        </div>
+        <div class="stat-card" style="--c:#ff6b6b">
+          <div class="stat-icon">🔲</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-slots">0</div>
+            <div class="stat-label">Total Slots</div>
+          </div>
+        </div>
+        <div class="stat-card" style="--c:#ffd93d">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-available">0</div>
+            <div class="stat-label">Available Slots</div>
+          </div>
+        </div>
+        <div class="stat-card" style="--c:#ff9f43">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-reservations">0</div>
+            <div class="stat-label">Active Reservations</div>
+          </div>
+        </div>
+        <div class="stat-card" style="--c:#48dbfb">
+          <div class="stat-icon">📋</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-logs">0</div>
+            <div class="stat-label">Entry-Exit Logs</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-row">
+        <div class="dash-card">
+          <h3>Slot Occupancy by Lot</h3>
+          <div id="occupancyBars"></div>
+        </div>
+        <div class="dash-card">
+          <h3>Recent Reservations</h3>
+          <div id="recentReservations"></div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <h3>Slot Type Distribution</h3>
+        <div class="slot-type-grid" id="slotTypeGrid"></div>
+      </div>
+    </div>
+
+    <!-- DRIVERS PAGE -->
+    <div class="page" id="page-drivers">
+      <div class="page-header">
+        <button class="btn-primary" onclick="openModal('driver')">+ Add Driver</button>
+      </div>
+      <div class="table-card">
+        <table class="data-table" id="driversTable">
+          <thead><tr>
+            <th>Driver ID</th><th>Name</th><th>Phone</th><th>Email</th><th>Actions</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VEHICLES PAGE -->
+    <div class="page" id="page-vehicles">
+      <div class="page-header">
+        <button class="btn-primary" onclick="openModal('vehicle')">+ Add Vehicle</button>
+      </div>
+      <div class="table-card">
+        <table class="data-table" id="vehiclesTable">
+          <thead><tr>
+            <th>Vehicle ID</th><th>License Plate</th><th>Type</th><th>Model</th><th>Driver</th><th>Actions</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PARKING LOTS PAGE -->
+    <div class="page" id="page-lots">
+      <div class="page-header">
+        <button class="btn-primary" onclick="openModal('lot')">+ Add Parking Lot</button>
+      </div>
+      <div class="lots-grid" id="lotsGrid"></div>
+    </div>
+
+    <!-- PARKING SLOTS PAGE -->
+    <div class="page" id="page-slots">
+      <div class="page-header">
+        <select id="filterLot" onchange="renderSlots()" class="filter-select">
+          <option value="">All Lots</option>
+        </select>
+        <select id="filterStatus" onchange="renderSlots()" class="filter-select">
+          <option value="">All Statuses</option>
+          <option value="Available">Available</option>
+          <option value="Occupied">Occupied</option>
+          <option value="Reserved">Reserved</option>
+        </select>
+        <button class="btn-primary" onclick="openModal('slot')">+ Add Slot</button>
+      </div>
+      <div class="slots-visual" id="slotsVisual"></div>
+    </div>
+
+    <!-- RESERVATIONS PAGE -->
+    <div class="page" id="page-reservations">
+      <div class="page-header">
+        <button class="btn-primary" onclick="openModal('reservation')">+ New Reservation</button>
+      </div>
+      <div class="table-card">
+        <table class="data-table" id="reservationsTable">
+          <thead><tr>
+            <th>Res ID</th><th>Driver</th><th>Slot</th><th>Start</th><th>End</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ENTRY-EXIT LOG PAGE -->
+    <div class="page" id="page-logs">
+      <div class="page-header">
+        <button class="btn-primary" onclick="openModal('log')">+ Add Log Entry</button>
+      </div>
+      <div class="table-card">
+        <table class="data-table" id="logsTable">
+          <thead><tr>
+            <th>Log ID</th><th>Vehicle</th><th>Slot</th><th>Entry Time</th><th>Exit Time</th><th>Duration</th><th>Actions</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SCHEMA PAGE -->
+    <div class="page" id="page-schema">
+      <div class="schema-container" id="schemaContainer"></div>
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal" id="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Record</h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

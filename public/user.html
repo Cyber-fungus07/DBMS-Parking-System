@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartPark — Driver Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="user.css"/>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- AUTH SCREEN -->
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo"><i data-lucide="car"></i></div>
+      <h2 class="auth-title">SmartPark</h2>
+      <p class="auth-sub">Driver Portal</p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginForm">
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input class="form-control" id="loginPhone" placeholder="Enter your registered phone" type="tel"/>
+        </div>
+        <button class="btn-full" onclick="doLogin()">Login →</button>
+        <div class="auth-error" id="loginError"></div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="registerForm" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-control" id="regName" placeholder="Your name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input class="form-control" id="regPhone" placeholder="10-digit mobile number" type="tel"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-control" id="regEmail" placeholder="your@email.com" type="email"/>
+        </div>
+        <button class="btn-full" onclick="doRegister()">Create Account →</button>
+        <div class="auth-error" id="regError"></div>
+      </div>
+
+      <a href="/" class="back-link">← Back to Home</a>
+    </div>
+  </div>
+
+  <!-- MAIN APP (shown after login) -->
+  <div id="appScreen" style="display:none">
+    <!-- TOPBAR -->
+    <header class="u-topbar">
+      <div class="u-logo"><i data-lucide="car" style="width:16px;height:16px;color:var(--accent)"></i> <span>SmartPark</span></div>
+      <nav class="u-nav">
+        <button class="u-nav-btn active" id="n-find"    onclick="uPage('find',this)"><i data-lucide="search"></i> Find Parking</button>
+        <button class="u-nav-btn"        id="n-book"    onclick="uPage('book',this)"><i data-lucide="calendar"></i> My Bookings</button>
+        <button class="u-nav-btn"        id="n-vehicles"onclick="uPage('vehicles',this)"><i data-lucide="car-front"></i> My Vehicles</button>
+        <button class="u-nav-btn"        id="n-history" onclick="uPage('history',this)"><i data-lucide="clock"></i> History</button>
+        <button class="u-nav-btn"        id="n-rates"   onclick="uPage('rates',this)"><i data-lucide="coins"></i> Rates</button>
+      </nav>
+      <div class="u-user">
+        <div class="u-avatar" id="uAvatar">A</div>
+        <div>
+          <div class="u-name" id="uName">Driver</div>
+          <div class="u-phone" id="uPhone"></div>
+        </div>
+        <button class="u-logout" onclick="doLogout()">Logout</button>
+      </div>
+    </header>
+
+    <!-- PAGES -->
+    <!-- FIND PARKING -->
+    <div class="u-page active" id="up-find">
+      <div class="u-page-head">
+        <h2>Find Parking</h2>
+        <p>Browse available slots across all parking zones</p>
+      </div>
+      <div class="search-bar">
+        <select class="form-control" id="findVtype" onchange="loadUserLots()">
+          <option value="">All Vehicle Types</option>
+          <option value="Two-Wheeler">Two-Wheeler</option>
+          <option value="Four-Wheeler">Four-Wheeler</option>
+          <option value="Heavy Vehicle">Heavy Vehicle</option>
+        </select>
+      </div>
+      <div class="lots-list" id="userLotsList"></div>
+    </div>
+
+    <!-- MY BOOKINGS -->
+    <div class="u-page" id="up-book">
+      <div class="u-page-head">
+        <h2>My Reservations</h2>
+        <p>All your current and past slot bookings</p>
+      </div>
+      <div class="bookings-list" id="userBookingsList"></div>
+    </div>
+
+    <!-- MY VEHICLES -->
+    <div class="u-page" id="up-vehicles">
+      <div class="u-page-head">
+        <h2>My Vehicles</h2>
+        <p>Manage your registered vehicles</p>
+        <button class="btn-primary" onclick="openAddVehicle()">+ Add Vehicle</button>
+      </div>
+      <div class="vehicles-list" id="userVehiclesList"></div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="u-page" id="up-history">
+      <div class="u-page-head">
+        <h2>Entry / Exit History</h2>
+        <p>Your complete parking activity log</p>
+      </div>
+      <div class="history-list" id="userHistoryList"></div>
+    </div>
+
+    <!-- RATES -->
+    <div class="u-page" id="up-rates">
+      <div class="u-page-head"><h2>Parking Rates</h2><p>Fee structure by vehicle type</p></div>
+      <div class="rates-grid">
+        <div class="rate-card" style="--rc:#00d4aa">
+          <div class="rate-icon"><i data-lucide="bike"></i></div>
+          <div class="rate-type">Two-Wheeler</div>
+          <div class="rate-price">₹20<span>/hr</span></div>
+          <div class="rate-examples">Bikes, Scooters, Mopeds</div>
+        </div>
+        <div class="rate-card" style="--rc:#6c63ff">
+          <div class="rate-icon"><i data-lucide="car-front"></i></div>
+          <div class="rate-type">Four-Wheeler</div>
+          <div class="rate-price">₹50<span>/hr</span></div>
+          <div class="rate-examples">Cars, SUVs, Sedans</div>
+        </div>
+        <div class="rate-card" style="--rc:#ff6b6b">
+          <div class="rate-icon"><i data-lucide="truck"></i></div>
+          <div class="rate-type">Heavy Vehicle</div>
+          <div class="rate-price">₹100<span>/hr</span></div>
+          <div class="rate-examples">Trucks, Buses, Tempos</div>
+        </div>
+      </div>
+      <div class="rate-note">
+        <strong>Note:</strong> Fees are calculated from entry time to exit time. Reservations are charged based on booked duration. Minimum charge applies for first 30 minutes.
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOK SLOT MODAL -->
+  <div class="u-modal-overlay" id="bookModal" onclick="closeBookModal()">
+    <div class="u-modal" onclick="event.stopPropagation()">
+      <div class="u-modal-header">
+        <h3 id="bookModalTitle">Book Slot</h3>
+        <button onclick="closeBookModal()">✕</button>
+      </div>
+      <div class="u-modal-body" id="bookModalBody"></div>
+    </div>
+  </div>
+
+  <!-- ADD VEHICLE MODAL -->
+  <div class="u-modal-overlay" id="vehicleModal" onclick="closeVehicleModal()">
+    <div class="u-modal" onclick="event.stopPropagation()">
+      <div class="u-modal-header">
+        <h3>Add Vehicle</h3>
+        <button onclick="closeVehicleModal()">✕</button>
+      </div>
+      <div class="u-modal-body">
+        <div class="form-group"><label class="form-label">License Plate</label><input class="form-control" id="vLp" placeholder="e.g. MH12AB1234"/></div>
+        <div class="form-group"><label class="form-label">Vehicle Type</label>
+          <select class="form-control" id="vType">
+            <option>Two-Wheeler</option><option>Four-Wheeler</option><option>Heavy Vehicle</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Model</label><input class="form-control" id="vModel" placeholder="e.g. Honda City"/></div>
+        <button class="btn-full" onclick="addVehicle()">Add Vehicle</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="u-toast" id="uToast"></div>
+  <script src="user.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
