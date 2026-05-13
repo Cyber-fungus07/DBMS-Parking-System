@@ -23,6 +23,7 @@ export function BookSlotModal({ slot, user, onClose, onBooked, showToast }) {
   async function handleConfirm() {
     if (!startTime || !endTime) { showToast('Please select times', 'error'); return }
     if (hours <= 0) { showToast('End time must be after start time', 'error'); return }
+    if (hours > 240) { showToast('Booking duration cannot exceed 10 days', 'error'); return }
     setLoading(true)
     try {
       const r = await api('/api/reservations', 'POST', {
@@ -83,6 +84,8 @@ export function BookSlotModal({ slot, user, onClose, onBooked, showToast }) {
           <div className="text-[13px] p-3 bg-[var(--card-muted)] border border-[var(--card-border)] rounded-sm">
             {!fee || hours <= 0 ? (
               <span className="text-red-600">End time must be after start time</span>
+            ) : hours > 240 ? (
+              <span className="text-red-600">Duration exceeds limit (Max 10 days)</span>
             ) : (
               <>
                 <div className="flex justify-between">
@@ -98,7 +101,7 @@ export function BookSlotModal({ slot, user, onClose, onBooked, showToast }) {
 
           <button
             onClick={handleConfirm}
-            disabled={loading || !fee}
+            disabled={loading || !fee || hours > 240}
             className="w-full py-2.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-50
                        text-[var(--accent-fg)] text-[13px] font-medium rounded-sm transition-colors cursor-pointer"
           >

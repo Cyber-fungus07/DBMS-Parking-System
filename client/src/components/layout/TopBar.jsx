@@ -1,4 +1,4 @@
-import { Car, Search, Calendar, CarFront, Clock, Coins, LogOut, Sun, Moon, LayoutDashboard, Users, Activity } from 'lucide-react'
+import { Car, Search, Calendar, CarFront, Clock, Coins, LogOut, Sun, Moon, LayoutDashboard, Users, Activity, FileText } from 'lucide-react'
 
 const USER_NAV_ITEMS = [
   { id: 'find',     label: 'Find Parking', icon: Search    },
@@ -15,6 +15,7 @@ const ADMIN_NAV_ITEMS = [
   { id: 'drivers',      label: 'Drivers',      icon: Users },
   { id: 'vehicles',     label: 'Vehicles',     icon: CarFront },
   { id: 'slots',        label: 'Slots',        icon: Car },
+  { id: 'reports',      label: 'Reports',      icon: FileText },
 ]
 
 export function TopBar({ user, activePage, onNavigate, onLogout, theme, toggleTheme }) {

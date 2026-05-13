@@ -451,3 +451,88 @@ export function AdminSlots({ showToast }) {
     </div>
   )
 }
+
+export function AdminReports({ showToast }) {
+  const [reports, setReports] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => { load() }, [])
+
+  async function load() {
+    try {
+      setLoading(true)
+      const data = await api('/api/admin/reports/daily')
+      setReports(data)
+    } catch (e) {
+      showToast(e.message, 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function formatDate(d) {
+    return new Date(d).toLocaleDateString('en-IN', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  }
+
+  if (loading) return <div className="p-6 text-[var(--text-muted)]">Loading reports...</div>
+
+  return (
+    <div className="p-6 page-in">
+      <div className="mb-6 flex justify-between items-end">
+        <div>
+          <h2 className="text-[15px] font-medium text-[var(--text-main)] mb-1">Daily Receipts</h2>
+          <p className="text-[13px] text-[var(--text-muted)]">Revenue and occupancy breakdown by date</p>
+        </div>
+        <button 
+          onClick={load}
+          className="text-[11px] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
+        >
+          Refresh Data
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {reports.length > 0 ? reports.map((r, i) => (
+          <div key={i} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-sm overflow-hidden flex flex-col group hover:border-[var(--text-main)] transition-all duration-300">
+            <div className="p-4 border-b border-[var(--card-border)] bg-[var(--card-muted)] flex justify-between items-center">
+              <span className="text-[13px] font-medium">{formatDate(r.report_date)}</span>
+              <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
+            </div>
+            
+            <div className="p-5 space-y-4">
+              <div className="flex justify-between items-baseline">
+                <span className="text-[11px] uppercase tracking-wider text-[var(--text-muted)]">Total Revenue</span>
+                <span className="text-xl font-medium number-stat text-[var(--text-main)]">₹{parseFloat(r.revenue || 0).toFixed(2)}</span>
+              </div>
+              
+              <div className="flex justify-between items-baseline">
+                <span className="text-[11px] uppercase tracking-wider text-[var(--text-muted)]">Occupancy Events</span>
+                <span className="text-[15px] font-medium number-stat">{r.occupancy} <span className="text-[11px] font-normal text-[var(--text-muted)] uppercase ml-1">Sessions</span></span>
+              </div>
+
+              <div className="pt-4 border-t border-[var(--card-border)] border-dashed">
+                <div className="flex justify-between text-[11px] text-[var(--text-muted)] italic">
+                  <span>Receipt ID: SR-{new Date(r.report_date).getTime().toString().slice(-6)}</span>
+                  <span>Verified</span>
+                </div>
+              </div>
+            </div>
+            
+            <button className="w-full py-3 text-[11px] uppercase tracking-widest font-medium border-t border-[var(--card-border)] hover:bg-[var(--text-main)] hover:text-[var(--bg-color)] transition-all duration-300 opacity-0 group-hover:opacity-100">
+              Print Receipt
+            </button>
+          </div>
+        )) : (
+          <div className="col-span-full py-20 text-center border border-dashed border-[var(--card-border)] rounded-sm">
+            <p className="text-[13px] text-[var(--text-muted)]">No financial data available for the selected period.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

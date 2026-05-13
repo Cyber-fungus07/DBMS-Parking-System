@@ -69,6 +69,43 @@ app.get('/api/dashboard/stats', async (req, res) => {
 });
 
 // ============================================================
+// DAILY REPORTS (RECEIPTS)
+// ============================================================
+app.get('/api/admin/reports/daily', async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT 
+        report_date,
+        SUM(daily_revenue) AS revenue,
+        SUM(occupancy_count) AS occupancy,
+        COUNT(*) AS source_count
+      FROM (
+        SELECT 
+          DATE(Start_time) AS report_date, 
+          SUM(Fee) AS daily_revenue, 
+          COUNT(Res_id) AS occupancy_count
+        FROM Reservation 
+        WHERE Payment_status = 'Paid'
+        GROUP BY DATE(Start_time)
+        
+        UNION ALL
+        
+        SELECT 
+          DATE(Entry_time) AS report_date, 
+          SUM(Fee) AS daily_revenue, 
+          COUNT(Log_id) AS occupancy_count
+        FROM EntryExitLog 
+        WHERE Payment_status = 'Paid'
+        GROUP BY DATE(Entry_time)
+      ) combined
+      GROUP BY report_date
+      ORDER BY report_date DESC
+    `);
+    res.json(rows);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ============================================================
 // DRIVERS
 // ============================================================
 app.get('/api/drivers', async (req, res) => {
@@ -286,6 +323,10 @@ app.post('/api/reservations', async (req, res) => {
     return res.status(400).json({ error: 'All fields required' });
   if (new Date(End_time) <= new Date(Start_time))
     return res.status(400).json({ error: 'End time must be after start time' });
+
+  const durationMs = new Date(End_time) - new Date(Start_time);
+  if (durationMs > 10 * 24 * 60 * 60 * 1000)
+    return res.status(400).json({ error: 'Booking duration cannot exceed 10 days' });
 
   const conn = await pool.getConnection();
   try {

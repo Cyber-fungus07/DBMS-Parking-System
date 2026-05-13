@@ -8,7 +8,7 @@ import { History }     from './components/pages/History'
 import { Rates }       from './components/pages/Rates'
 import { Toast }       from './components/ui/Toast'
 import { useToast }    from './hooks/useToast'
-import { AdminDashboard, AdminDrivers, AdminVehicles, AdminReservations, AdminLogs, AdminSlots } from './components/pages/admin/AdminPages'
+import { AdminDashboard, AdminDrivers, AdminVehicles, AdminReservations, AdminLogs, AdminSlots, AdminReports } from './components/pages/admin/AdminPages'
 
 export default function App() {
   const [user, setUser]         = useState(() => JSON.parse(sessionStorage.getItem('parkUser') || 'null'))
@@ -71,6 +71,7 @@ export default function App() {
             {activePage === 'drivers'      && <AdminDrivers      key="drvs"  {...pageProps} />}
             {activePage === 'vehicles'     && <AdminVehicles     key="veh"   {...pageProps} />}
             {activePage === 'slots'        && <AdminSlots        key="slots" {...pageProps} />}
+            {activePage === 'reports'      && <AdminReports      key="repts" {...pageProps} />}
           </>
         ) : (
           <>
