@@ -1,8 +1,3 @@
--- ================================================================
--- SMART PARKING VEHICLE MANAGEMENT SYSTEM
--- Database Schema + Sample Data
--- Run this in MySQL before starting the server
--- ================================================================
 
 CREATE DATABASE IF NOT EXISTS smart_parking;
 USE smart_parking;
