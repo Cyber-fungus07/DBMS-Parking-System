@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS Reservation (
   Fee         DECIMAL(10,2) DEFAULT 0.00,
   Payment_status ENUM('Unpaid','Paid') DEFAULT 'Unpaid',
   R_slot_id   INT NOT NULL,
+  
   RD_id       INT NOT NULL,
   FOREIGN KEY (R_slot_id) REFERENCES ParkingSlot(Slot_id) ON DELETE CASCADE,
   FOREIGN KEY (RD_id)     REFERENCES Driver(Did) ON DELETE CASCADE,

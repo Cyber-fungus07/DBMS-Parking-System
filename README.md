@@ -71,5 +71,10 @@ Follow these steps to get the project running on your local machine.
    npm run dev
    ```
 
+### 4. Access the Application
+- Open your browser and navigate to `http://localhost:5173` (or the port Vite provides).
+- You can log in using the sample user phone number: `9876543210`.
+- To access the **Admin Portal**, log in with the admin phone number: `admin` (or update a user's role to `'admin'` in the database).
+
 ---
 *Built with a focus on modern, responsive, and sleek UI/UX design conventions.*
