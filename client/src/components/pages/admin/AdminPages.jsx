@@ -455,6 +455,7 @@ export function AdminSlots({ showToast }) {
 export function AdminReports({ showToast }) {
   const [reports, setReports] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedReport, setSelectedReport] = useState(null)
 
   useEffect(() => { load() }, [])
 
@@ -485,8 +486,8 @@ export function AdminReports({ showToast }) {
     <div className="p-6 page-in">
       <div className="mb-6 flex justify-between items-end">
         <div>
-          <h2 className="text-[15px] font-medium text-[var(--text-main)] mb-1">Daily Receipts</h2>
-          <p className="text-[13px] text-[var(--text-muted)]">Revenue and occupancy breakdown by date</p>
+          <h2 className="text-[15px] font-medium text-[var(--text-main)] mb-1">Daily Financial Receipts</h2>
+          <p className="text-[13px] text-[var(--text-muted)]">Audit-ready revenue and occupancy breakdown</p>
         </div>
         <button 
           onClick={load}
@@ -506,25 +507,32 @@ export function AdminReports({ showToast }) {
             
             <div className="p-5 space-y-4">
               <div className="flex justify-between items-baseline">
-                <span className="text-[11px] uppercase tracking-wider text-[var(--text-muted)]">Total Revenue</span>
+                <span className="text-[11px] uppercase tracking-wider text-[var(--text-muted)]">Daily Total</span>
                 <span className="text-xl font-medium number-stat text-[var(--text-main)]">₹{parseFloat(r.revenue || 0).toFixed(2)}</span>
               </div>
-              
-              <div className="flex justify-between items-baseline">
-                <span className="text-[11px] uppercase tracking-wider text-[var(--text-muted)]">Occupancy Events</span>
-                <span className="text-[15px] font-medium number-stat">{r.occupancy} <span className="text-[11px] font-normal text-[var(--text-muted)] uppercase ml-1">Sessions</span></span>
-              </div>
 
-              <div className="pt-4 border-t border-[var(--card-border)] border-dashed">
-                <div className="flex justify-between text-[11px] text-[var(--text-muted)] italic">
-                  <span>Receipt ID: SR-{new Date(r.report_date).getTime().toString().slice(-6)}</span>
-                  <span>Verified</span>
+              <div className="space-y-2 py-3 border-y border-[var(--card-border)] border-dashed my-2">
+                <div className="flex justify-between text-[12px]">
+                  <span className="text-[var(--text-muted)]">Reservations</span>
+                  <span className="number-stat">₹{parseFloat(r.res_rev || 0).toFixed(0)}</span>
                 </div>
+                <div className="flex justify-between text-[12px]">
+                  <span className="text-[var(--text-muted)]">Walk-ins (Logs)</span>
+                  <span className="number-stat">₹{parseFloat(r.log_rev || 0).toFixed(0)}</span>
+                </div>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-[11px] uppercase tracking-wider text-[var(--text-muted)]">Activity</span>
+                <span className="text-[13px] font-medium number-stat">{r.occupancy} sessions</span>
               </div>
             </div>
             
-            <button className="w-full py-3 text-[11px] uppercase tracking-widest font-medium border-t border-[var(--card-border)] hover:bg-[var(--text-main)] hover:text-[var(--bg-color)] transition-all duration-300 opacity-0 group-hover:opacity-100">
-              Print Receipt
+            <button 
+              onClick={() => setSelectedReport(r)}
+              className="w-full py-3 text-[11px] uppercase tracking-widest font-medium border-t border-[var(--card-border)] hover:bg-[var(--text-main)] hover:text-[var(--bg-color)] transition-all duration-300"
+            >
+              Detailed Breakdown
             </button>
           </div>
         )) : (
@@ -533,6 +541,67 @@ export function AdminReports({ showToast }) {
           </div>
         )}
       </div>
+
+      {selectedReport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-sm w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="p-6 text-center border-b border-[var(--card-border)] relative">
+              <button 
+                onClick={() => setSelectedReport(null)}
+                className="absolute right-4 top-4 text-[var(--text-muted)] hover:text-[var(--text-main)]"
+              >
+                ✕
+              </button>
+              <h3 className="text-[11px] uppercase tracking-[0.2em] text-[var(--text-muted)] mb-1">Audit Receipt</h3>
+              <div className="text-[16px] font-medium serif-font">{formatDate(selectedReport.report_date)}</div>
+            </div>
+
+            <div className="p-8 space-y-6">
+              <div className="space-y-4">
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-[var(--text-muted)]">Two-Wheelers</span>
+                  <span className="number-stat font-medium">₹{parseFloat(selectedReport.two_wheeler_rev || 0).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-[var(--text-muted)]">Four-Wheelers</span>
+                  <span className="number-stat font-medium">₹{parseFloat(selectedReport.four_wheeler_rev || 0).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-[var(--text-muted)]">Heavy Vehicles</span>
+                  <span className="number-stat font-medium">₹{parseFloat(selectedReport.heavy_rev || 0).toFixed(2)}</span>
+                </div>
+                <div className="pt-4 border-t border-[var(--card-border)] flex justify-between items-baseline">
+                  <span className="text-[11px] uppercase tracking-widest font-bold">Total Revenue</span>
+                  <span className="text-2xl font-bold number-stat">₹{parseFloat(selectedReport.revenue || 0).toFixed(2)}</span>
+                </div>
+              </div>
+
+              <div className="bg-[var(--card-muted)] p-4 rounded-sm space-y-2">
+                <div className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] mb-1">Efficiency</div>
+                <div className="flex justify-between text-[12px]">
+                  <span>Total Occupancy Events</span>
+                  <span className="number-stat">{selectedReport.occupancy}</span>
+                </div>
+                <div className="flex justify-between text-[12px]">
+                  <span>Avg. Ticket Size</span>
+                  <span className="number-stat">₹{selectedReport.occupancy > 0 ? (selectedReport.revenue / selectedReport.occupancy).toFixed(2) : '0.00'}</span>
+                </div>
+              </div>
+
+              <div className="text-center text-[11px] text-[var(--text-muted)] italic">
+                Generated by SmartPark System • {new Date().toLocaleTimeString()}
+              </div>
+            </div>
+
+            <button 
+              onClick={() => { window.print(); }}
+              className="w-full py-4 bg-[var(--text-main)] text-[var(--bg-color)] text-[11px] uppercase tracking-widest font-bold hover:opacity-90 transition-opacity"
+            >
+              Print Report
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

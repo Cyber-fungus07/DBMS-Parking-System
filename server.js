@@ -76,27 +76,45 @@ app.get('/api/admin/reports/daily', async (req, res) => {
     const [rows] = await pool.query(`
       SELECT 
         report_date,
-        SUM(daily_revenue) AS revenue,
-        SUM(occupancy_count) AS occupancy,
-        COUNT(*) AS source_count
+        SUM(revenue) AS revenue,
+        SUM(occupancy) AS occupancy,
+        SUM(two_wheeler_rev) AS two_wheeler_rev,
+        SUM(four_wheeler_rev) AS four_wheeler_rev,
+        SUM(heavy_rev) AS heavy_rev,
+        SUM(res_rev) AS res_rev,
+        SUM(log_rev) AS log_rev
       FROM (
+        -- Reservations
         SELECT 
-          DATE(Start_time) AS report_date, 
-          SUM(Fee) AS daily_revenue, 
-          COUNT(Res_id) AS occupancy_count
-        FROM Reservation 
-        WHERE Payment_status = 'Paid'
-        GROUP BY DATE(Start_time)
+          DATE(r.Start_time) AS report_date, 
+          SUM(r.Fee) AS revenue, 
+          COUNT(r.Res_id) AS occupancy,
+          SUM(CASE WHEN ps.S_type = 'Two-Wheeler' THEN r.Fee ELSE 0 END) AS two_wheeler_rev,
+          SUM(CASE WHEN ps.S_type = 'Four-Wheeler' THEN r.Fee ELSE 0 END) AS four_wheeler_rev,
+          SUM(CASE WHEN ps.S_type = 'Heavy Vehicle' THEN r.Fee ELSE 0 END) AS heavy_rev,
+          SUM(r.Fee) AS res_rev,
+          0 AS log_rev
+        FROM Reservation r
+        JOIN ParkingSlot ps ON r.R_slot_id = ps.Slot_id
+        WHERE r.Payment_status = 'Paid'
+        GROUP BY DATE(r.Start_time)
         
         UNION ALL
         
+        -- Entry/Exit Logs
         SELECT 
-          DATE(Entry_time) AS report_date, 
-          SUM(Fee) AS daily_revenue, 
-          COUNT(Log_id) AS occupancy_count
-        FROM EntryExitLog 
-        WHERE Payment_status = 'Paid'
-        GROUP BY DATE(Entry_time)
+          DATE(l.Entry_time) AS report_date, 
+          SUM(l.Fee) AS revenue, 
+          COUNT(l.Log_id) AS occupancy,
+          SUM(CASE WHEN ps.S_type = 'Two-Wheeler' THEN l.Fee ELSE 0 END) AS two_wheeler_rev,
+          SUM(CASE WHEN ps.S_type = 'Four-Wheeler' THEN l.Fee ELSE 0 END) AS four_wheeler_rev,
+          SUM(CASE WHEN ps.S_type = 'Heavy Vehicle' THEN l.Fee ELSE 0 END) AS heavy_rev,
+          0 AS res_rev,
+          SUM(l.Fee) AS log_rev
+        FROM EntryExitLog l
+        JOIN ParkingSlot ps ON l.E_slot_id = ps.Slot_id
+        WHERE l.Payment_status = 'Paid'
+        GROUP BY DATE(l.Entry_time)
       ) combined
       GROUP BY report_date
       ORDER BY report_date DESC
